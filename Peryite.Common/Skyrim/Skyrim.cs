@@ -136,6 +136,8 @@ namespace Peryite.Common.Skyrim
             {
                 PluginInfo.Plugins[i] = br.ReadWString();
             }
+
+            return;
         }
 
         private static Bitmap ReadScreenshot(BinaryReader br, bool isSpecialEdition, int width, int height)

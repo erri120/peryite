@@ -82,6 +82,7 @@ namespace Peryite.Common.Skyrim
                     result = new GlobalVariables().ReadData(br);
                     break;
                 case GlobalDataType.CreatedObject:
+                    result = new CreatedObjects().ReadData(br);
                     break;
                 case GlobalDataType.Effects:
                     break;

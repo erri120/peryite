@@ -187,12 +187,12 @@ namespace Peryite.Common.Skyrim
 
             var byte1 = br.ReadByte();
 
-            res.Type = (byte) (byte1 & 00000011);
+            res.Type = (byte) (byte1 & 0x3);
 
             if (res.Type == 0)
             {
                 res.Value = (uint)(byte1 >> 2);
-            } else if (res.Type >= 1)
+            } else if (res.Type >= 1 && res.Type <= 2)
             {
                 var byte2 = br.ReadByte();
                 if(res.Type == 1)
@@ -204,6 +204,10 @@ namespace Peryite.Common.Skyrim
                     var byte3 = br.ReadByte();
                     res.Value = (uint) (byte1 | (byte2 << 8) | (byte3 << 16) >> 2);
                 }
+            }
+            else
+            {
+                throw new CorruptedSaveFileException($"VSVAL Type is {res.Type} but can only be 0, 1 or 2!");
             }
 
             return res;

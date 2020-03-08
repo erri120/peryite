@@ -29,10 +29,10 @@ namespace Peryite.Common.Skyrim
         public uint PluginInfoSize;
         public PluginInfo PluginInfo;
         public FileLocationTable FileLocationTable;
-        public GlobalData[] GlobalDataTable1;
-        public GlobalData[] GlobalDataTable2;
+        public IGlobalData[] GlobalDataTable1;
+        public IGlobalData[] GlobalDataTable2;
         public ChangeForm[] ChangeForms;
-        public GlobalData[] GlobalDataTable3;
+        public IGlobalData[] GlobalDataTable3;
         public uint FormIDArrayCount;
         public uint[] FormIDArray;
         public uint VisitedWorldspaceArrayCount;
@@ -153,15 +153,15 @@ namespace Peryite.Common.Skyrim
             };
 
             // types 0 to 8
-            GlobalDataTable1 = new GlobalData[FileLocationTable.GlobalDataTable1Count];
+            GlobalDataTable1 = new IGlobalData[FileLocationTable.GlobalDataTable1Count];
             
             // types 100 to 114
-            GlobalDataTable2 = new GlobalData[FileLocationTable.GlobalDataTable2Count];
+            GlobalDataTable2 = new IGlobalData[FileLocationTable.GlobalDataTable2Count];
             
             ChangeForms = new ChangeForm[FileLocationTable.ChangeFormCount];
             
             // types 1000 to 1005
-            GlobalDataTable3 = new GlobalData[FileLocationTable.GlobalDataTable3Count];
+            GlobalDataTable3 = new IGlobalData[FileLocationTable.GlobalDataTable3Count];
 
             for (var i = 0; i < GlobalDataTable1.Length; i++)
             {

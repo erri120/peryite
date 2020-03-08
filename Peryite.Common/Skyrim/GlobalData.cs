@@ -41,49 +41,37 @@ namespace Peryite.Common.Skyrim
         Main = 1005
     }
 
-    public class GlobalData
-    {
-        public GlobalDataType Type;
-        public uint Length;
-        public IGlobalDataType[] Data;
-    }
-
-    public interface IGlobalDataType
+    public interface IGlobalData
     {
         GlobalDataType Type { get; }
 
-        IGlobalDataType ReadData(BinaryReader br);
+        IGlobalData ReadData(BinaryReader br);
     }
 
     public static partial class BinaryReaderExtensions
     {
-        public static GlobalData ReadGlobalData([NotNull] this BinaryReader br, int typeStart, int typeEnd)
+        public static IGlobalData ReadGlobalData([NotNull] this BinaryReader br, int typeStart, int typeEnd)
         {
-            var res = new GlobalData
-            {
-                Type = (GlobalDataType)br.ReadUInt32(),
-                Length = br.ReadUInt32()
-            };
+            var type = (GlobalDataType) br.ReadUInt32();
+            var length = br.ReadUInt32();
 
-            if ((int)res.Type < typeStart || (int)res.Type > typeEnd)
+            if ((int)type < typeStart || (int)type > typeEnd)
                 return null;
 
-            res.Data = new IGlobalDataType[res.Length];
-
-            for (var i = 0; i < res.Length; i++)
-            {
-                res.Data[i] = br.ReadIGlobalDataType(res.Type);
-            }
-
-            return res;
+            return br.ReadIGlobalDataType(type, length);
         }
 
-        public static IGlobalDataType ReadIGlobalDataType([NotNull] this BinaryReader br, GlobalDataType type)
+        public static IGlobalData ReadIGlobalDataType([NotNull] this BinaryReader br, GlobalDataType type, uint length)
         {
+            var positionStart = br.BaseStream.Position;
+
+            IGlobalData result = null;
+
             switch (type)
             {
                 case GlobalDataType.MiscStats:
-                    return new MiscStats().ReadData(br);
+                    result = new MiscStats().ReadData(br);
+                    break;
                 case GlobalDataType.PlayerLocation:
                     break;
                 case GlobalDataType.TES:
@@ -146,7 +134,13 @@ namespace Peryite.Common.Skyrim
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
 
-            return null;
+            var positionEnd = br.BaseStream.Position;
+
+            if (positionStart + length != positionEnd)
+                throw new CorruptedSaveFileException(
+                    $"Expected amounts of bytes: {length}, number of bytes read: {positionEnd - positionStart} while reading GlobalData of type {type}!");
+
+            return result;
         }
     }
 }

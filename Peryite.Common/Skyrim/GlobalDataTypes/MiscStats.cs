@@ -2,18 +2,17 @@
 
 namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
-    public class MiscStats : IGlobalDataType
+    public class MiscStats : IGlobalData
     {
         public GlobalDataType Type => GlobalDataType.MiscStats;
 
         public uint Count;
         public MiscStat[] Stats;
 
-        public IGlobalDataType ReadData(BinaryReader br)
+        public IGlobalData ReadData(BinaryReader br)
         {
             Count = br.ReadUInt32();
             Stats = new MiscStat[Count];
-
             for (var i = 0; i < Count; i++)
             {
                 var stat = new MiscStat
@@ -22,6 +21,7 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
                 };
 
                 var category = br.ReadByte();
+
                 stat.Category = (MiscStatCategory) category;
                 stat.Value = br.ReadInt32();
 

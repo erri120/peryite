@@ -152,6 +152,17 @@ namespace Peryite.Common.Skyrim
                 Unused = ReadUInt32Array(br, 15)
             };
 
+            // types 0 to 8
+            GlobalDataTable1 = new GlobalData[FileLocationTable.GlobalDataTable1Count];
+            
+            // types 100 to 114
+            GlobalDataTable2 = new GlobalData[FileLocationTable.GlobalDataTable2Count];
+            
+            ChangeForms = new ChangeForm[FileLocationTable.ChangeFormCount];
+            
+            // types 1000 to 1005
+            GlobalDataTable3 = new GlobalData[FileLocationTable.GlobalDataTable3Count];
+
             return;
         }
 

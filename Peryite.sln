@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project FIles", "Project FIles", "{C0AAF9D8-0E47-4372-BD26-1E4978164B29}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
+		Peryite.sln.DotSettings = Peryite.sln.DotSettings
 		README.md = README.md
 	EndProjectSection
 EndProject

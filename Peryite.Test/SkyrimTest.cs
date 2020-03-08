@@ -9,7 +9,7 @@ namespace Peryite.Test
         [TestMethod]
         public void TestSkyrimSaveFile()
         {
-            const string file = "skyrim-le.ess";
+            const string file = "skyrim-le-2.ess";
 
             var skyrimFile = new SkyrimSaveFile();
             skyrimFile.LoadFile(file);

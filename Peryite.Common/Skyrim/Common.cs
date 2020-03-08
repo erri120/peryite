@@ -74,6 +74,68 @@ namespace Peryite.Common.Skyrim
         public uint ID;
     }
 
+    /// <summary>
+    /// VSVAL (Variable-sized value)
+    /// </summary>
+    public struct VSVAL
+    {
+        public byte Type;
+        public uint Value;
+
+        #region Operators
+
+        public static implicit operator VSVAL(int i)
+        {
+            return new VSVAL { Value = (uint)i, Type = 2 } ;
+        }
+
+        public static bool operator ==(VSVAL v1, VSVAL v2)
+        {
+            return v1.Value == v2.Value;
+        }
+
+        public static bool operator !=(VSVAL v1, VSVAL v2)
+        {
+            return v1.Value != v2.Value;
+        }
+
+        public static bool operator <(VSVAL v1, VSVAL v2)
+        {
+            return v1.Value < v2.Value;
+        }
+
+        public static bool operator >(VSVAL v1, VSVAL v2)
+        {
+            return v1.Value > v2.Value;
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override bool Equals(object obj)
+        {
+            if (obj is int i)
+            {
+                return Value == i;
+            }
+
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+
+        #endregion
+    }
+
     public static partial class BinaryReaderExtensions
     {
         public static WString ReadWString([NotNull] this BinaryReader br)
@@ -117,6 +179,34 @@ namespace Peryite.Common.Skyrim
             }
 
             return default;
+        }
+
+        public static VSVAL ReadVSVAL([NotNull] this BinaryReader br)
+        {
+            var res = new VSVAL();
+
+            var byte1 = br.ReadByte();
+
+            res.Type = (byte) (byte1 & 00000011);
+
+            if (res.Type == 0)
+            {
+                res.Value = (uint)(byte1 >> 2);
+            } else if (res.Type >= 1)
+            {
+                var byte2 = br.ReadByte();
+                if(res.Type == 1)
+                {
+                    res.Value = (uint) (byte1 | byte2 << 8) >> 2;
+                }
+                else
+                {
+                    var byte3 = br.ReadByte();
+                    res.Value = (uint) (byte1 | (byte2 << 8) | (byte3 << 16) >> 2);
+                }
+            }
+
+            return res;
         }
     }
 }

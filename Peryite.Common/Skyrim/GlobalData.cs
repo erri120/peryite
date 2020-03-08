@@ -10,7 +10,7 @@ namespace Peryite.Common.Skyrim
         MiscStats = 0,
         PlayerLocation = 1,
         TES = 2,
-        GlobalVariable = 3,
+        GlobalVariables = 3,
         CreatedObject = 4,
         Effects = 5,
         Weather = 6,
@@ -78,7 +78,8 @@ namespace Peryite.Common.Skyrim
                 case GlobalDataType.TES:
                     result = new TES().ReadData(br);
                     break;
-                case GlobalDataType.GlobalVariable:
+                case GlobalDataType.GlobalVariables:
+                    result = new GlobalVariables().ReadData(br);
                     break;
                 case GlobalDataType.CreatedObject:
                     break;

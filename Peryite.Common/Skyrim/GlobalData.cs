@@ -73,6 +73,7 @@ namespace Peryite.Common.Skyrim
                     result = new MiscStats().ReadData(br);
                     break;
                 case GlobalDataType.PlayerLocation:
+                    result = new PlayerLocation().ReadData(br);
                     break;
                 case GlobalDataType.TES:
                     break;

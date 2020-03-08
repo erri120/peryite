@@ -163,6 +163,11 @@ namespace Peryite.Common.Skyrim
             // types 1000 to 1005
             GlobalDataTable3 = new GlobalData[FileLocationTable.GlobalDataTable3Count];
 
+            for (var i = 0; i < GlobalDataTable1.Length; i++)
+            {
+                GlobalDataTable1[i] = br.ReadGlobalData(0, 8);
+            }
+
             return;
         }
 

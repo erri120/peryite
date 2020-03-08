@@ -9,7 +9,7 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
         public uint Count;
         public MiscStat[] Stats;
 
-        public void ReadData(BinaryReader br)
+        public IGlobalDataType ReadData(BinaryReader br)
         {
             Count = br.ReadUInt32();
             Stats = new MiscStat[Count];
@@ -27,6 +27,8 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
 
                 Stats[i] = stat;
             }
+
+            return this;
         }
     }
 

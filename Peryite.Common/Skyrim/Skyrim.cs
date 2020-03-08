@@ -137,6 +137,21 @@ namespace Peryite.Common.Skyrim
                 PluginInfo.Plugins[i] = br.ReadWString();
             }
 
+            FileLocationTable = new FileLocationTable
+            {
+                FormIDArrayCountOffset = br.ReadUInt32(),
+                UnknownTable3Offset = br.ReadUInt32(),
+                GlobalDataTable1Offset = br.ReadUInt32(),
+                GlobalDataTable2Offset = br.ReadUInt32(),
+                ChangeFormsOffset = br.ReadUInt32(),
+                GlobalDataTable3Offset = br.ReadUInt32(),
+                GlobalDataTable1Count = br.ReadUInt32(),
+                GlobalDataTable2Count = br.ReadUInt32(),
+                GlobalDataTable3Count = br.ReadUInt32(),
+                ChangeFormCount = br.ReadUInt32(),
+                Unused = ReadUInt32Array(br, 15)
+            };
+
             return;
         }
 
@@ -175,6 +190,18 @@ namespace Peryite.Common.Skyrim
                     var c = Color.FromArgb(a, r, g, b);
                     result.SetPixel(j, i, c);
                 }
+            }
+
+            return result;
+        }
+
+        private static uint[] ReadUInt32Array(BinaryReader br, int length)
+        {
+            var result = new uint[length];
+
+            for (var i = 0; i < length; i++)
+            {
+                result[i] = br.ReadUInt32();
             }
 
             return result;

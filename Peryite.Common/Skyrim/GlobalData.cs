@@ -90,6 +90,7 @@ namespace Peryite.Common.Skyrim
                     result = new Weather().ReadData(br);
                     break;
                 case GlobalDataType.Audio:
+                    result = new Audio().ReadData(br);
                     break;
                 case GlobalDataType.SkyCells:
                     break;

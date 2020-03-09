@@ -206,7 +206,7 @@ namespace Peryite.Common.Skyrim
             }
             else
             {
-                throw new CorruptedSaveFileException($"VSVAL Type is {res.Type} but can only be 0, 1 or 2!");
+                throw new CorruptedSaveFileException($"VSVAL Type is {res.Type} but can only be 0, 1 or 2!", br);
             }
 
             return res;

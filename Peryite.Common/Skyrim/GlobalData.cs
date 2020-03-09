@@ -55,7 +55,7 @@ namespace Peryite.Common.Skyrim
             var length = br.ReadUInt32();
 
             if ((int)type < typeStart || (int)type > typeEnd)
-                return default!;
+                throw new CorruptedSaveFileException($"Expected GlobalData type should be between {typeStart} and {typeEnd} but is {type}!", br);
 
             return br.ReadIGlobalDataType(type, length);
         }
@@ -145,7 +145,7 @@ namespace Peryite.Common.Skyrim
 
             if (positionStart + length != positionEnd)
                 throw new CorruptedSaveFileException(
-                    $"Expected amounts of bytes: {length}, number of bytes read: {positionEnd - positionStart} while reading GlobalData of type {type}!");
+                    $"Expected amounts of bytes: {length}, number of bytes read: {positionEnd - positionStart} while reading GlobalData of type {type}!", br);
 
             return result;
         }

@@ -58,7 +58,7 @@ namespace Peryite.Common.Skyrim
             var magicString = new string(magic);
             if (magicString != SkyrimMagic)
             {
-                throw new CorruptedSaveFileException($"The magic string of the save file does not equal \"TESV_SAVEGAME\" but \"{magicString}\"");
+                throw new CorruptedSaveFileException($"The magic string of the save file does not equal \"TESV_SAVEGAME\" but \"{magicString}\"", br);
             }
 
             HeaderSize = br.ReadUInt32();
@@ -114,7 +114,7 @@ namespace Peryite.Common.Skyrim
 
                 if (res != decompressedSize)
                 {
-                    throw new CorruptedSaveFileException($"Could not decode compressed data at position {currentPosition} with length {compressedSize} to a decompressed byte array of length {decompressedSize}");
+                    throw new CorruptedSaveFileException($"Could not decode compressed data at position {currentPosition} with length {compressedSize} to a decompressed byte array of length {decompressedSize}", br);
                 }
 
                 using var tempStream = new MemoryStream(decompressed);
@@ -165,6 +165,11 @@ namespace Peryite.Common.Skyrim
             for (var i = 0; i < GlobalDataTable1.Length; i++)
             {
                 GlobalDataTable1[i] = br.ReadGlobalData(0, 8);
+            }
+
+            for (var i = 0; i < GlobalDataTable2.Length; i++)
+            {
+                GlobalDataTable2[i] = br.ReadGlobalData(100, 114);
             }
 
             return;

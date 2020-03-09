@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Peryite.Common
 {
@@ -27,5 +28,10 @@ namespace Peryite.Common
     public class CorruptedSaveFileException : SaveFileException
     {
         public CorruptedSaveFileException(string msg) : base(msg) { }
+
+        public CorruptedSaveFileException(string msg, BinaryReader br) : base(
+            msg + $"\nAt position: {br.BaseStream.Position}")
+        {
+        }
     }
 }

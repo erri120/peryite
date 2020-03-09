@@ -7,11 +7,11 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
         public GlobalDataType Type => GlobalDataType.TES;
 
         public VSVAL Count1;
-        public Unknown0[] Unknown1;
+        public Unknown0[] Unknown1 = default!;
         public uint Count2;
-        public RefID[] Unknown2;
+        public RefID[] Unknown2 = default!;
         public VSVAL Count3;
-        public RefID[] Unknown3;
+        public RefID[] Unknown3 = default!;
 
         public IGlobalData ReadData(BinaryReader br)
         {

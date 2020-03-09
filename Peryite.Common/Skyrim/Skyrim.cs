@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -23,20 +22,20 @@ namespace Peryite.Common.Skyrim
         public uint HeaderSize;
         public Header Header;
         public bool IsSpecialEdition;
-        public Bitmap Screenshot;
+        public Bitmap? Screenshot;
         public SkyrimSaveFileCompression Compression;
         public byte FormVersion;
         public uint PluginInfoSize;
         public PluginInfo PluginInfo;
         public FileLocationTable FileLocationTable;
-        public IGlobalData[] GlobalDataTable1;
-        public IGlobalData[] GlobalDataTable2;
-        public ChangeForm[] ChangeForms;
-        public IGlobalData[] GlobalDataTable3;
+        public IGlobalData[] GlobalDataTable1 = default!;
+        public IGlobalData[] GlobalDataTable2 = default!;
+        public ChangeForm[] ChangeForms = default!;
+        public IGlobalData[] GlobalDataTable3 = default!;
         public uint FormIDArrayCount;
-        public uint[] FormIDArray;
+        public uint[] FormIDArray = default!;
         public uint VisitedWorldspaceArrayCount;
-        public uint[] VisitedWorldspaceArray;
+        public uint[] VisitedWorldspaceArray = default!;
         public uint Unknown3TableSize;
         public Unknown3Table Unknown3Table;
 

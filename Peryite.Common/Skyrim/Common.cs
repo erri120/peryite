@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace Peryite.Common.Skyrim
@@ -138,7 +137,7 @@ namespace Peryite.Common.Skyrim
 
     public static partial class BinaryReaderExtensions
     {
-        public static WString ReadWString([NotNull] this BinaryReader br)
+        public static WString ReadWString(this BinaryReader br)
         {
             var result = new WString
             {
@@ -150,14 +149,14 @@ namespace Peryite.Common.Skyrim
             return result;
         }
 
-        public static DateTime ReadFileTime([NotNull] this BinaryReader br)
+        public static DateTime ReadFileTime(this BinaryReader br)
         {
             byte[] b = br.ReadBytes(8);
             var fileTime = BitConverter.ToInt64(b, 0);
             return DateTime.FromFileTimeUtc(fileTime);
         }
 
-        public static RefID ReadRefID([NotNull] this BinaryReader br)
+        public static RefID ReadRefID(this BinaryReader br)
         {
             var byte1 = br.ReadByte();
             var byte2 = br.ReadByte();
@@ -181,7 +180,7 @@ namespace Peryite.Common.Skyrim
             return default;
         }
 
-        public static VSVAL ReadVSVAL([NotNull] this BinaryReader br)
+        public static VSVAL ReadVSVAL(this BinaryReader br)
         {
             var res = new VSVAL();
 

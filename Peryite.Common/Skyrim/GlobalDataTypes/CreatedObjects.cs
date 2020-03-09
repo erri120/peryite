@@ -7,13 +7,13 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
         public GlobalDataType Type => GlobalDataType.CreatedObject;
 
         public VSVAL WeaponCount;
-        public Enchantment[] WeaponEnchantments;
+        public Enchantment[] WeaponEnchantments = default!;
         public VSVAL ArmorCount;
-        public Enchantment[] ArmorEnchantments;
+        public Enchantment[] ArmorEnchantments = default!;
         public VSVAL PotionCount;
-        public Enchantment[] Potions;
+        public Enchantment[] Potions = default!;
         public VSVAL PoisonCount;
-        public Enchantment[] Poisons;
+        public Enchantment[] Poisons = default!;
 
         public IGlobalData ReadData(BinaryReader br)
         {
@@ -57,7 +57,7 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
             public RefID RefID;
             public uint TimesUsed;
             public VSVAL MagicEffectsCount;
-            public MagicEffect[] Effects;
+            public MagicEffect[] Effects = default!;
 
             public Enchantment ReadEnchantment(BinaryReader br)
             {

@@ -7,7 +7,7 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
         public GlobalDataType Type => GlobalDataType.GlobalVariables;
 
         public VSVAL Count;
-        public GlobalVariable[] Globals;
+        public GlobalVariable[] Globals = default!;
 
         public IGlobalData ReadData(BinaryReader br)
         {

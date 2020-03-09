@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Peryite.Common.Skyrim.GlobalDataTypes;
 
@@ -50,22 +49,22 @@ namespace Peryite.Common.Skyrim
 
     public static partial class BinaryReaderExtensions
     {
-        public static IGlobalData ReadGlobalData([NotNull] this BinaryReader br, int typeStart, int typeEnd)
+        public static IGlobalData ReadGlobalData(this BinaryReader br, int typeStart, int typeEnd)
         {
             var type = (GlobalDataType) br.ReadUInt32();
             var length = br.ReadUInt32();
 
             if ((int)type < typeStart || (int)type > typeEnd)
-                return null;
+                return default!;
 
             return br.ReadIGlobalDataType(type, length);
         }
 
-        public static IGlobalData ReadIGlobalDataType([NotNull] this BinaryReader br, GlobalDataType type, uint length)
+        public static IGlobalData ReadIGlobalDataType(this BinaryReader br, GlobalDataType type, uint length)
         {
             var positionStart = br.BaseStream.Position;
 
-            IGlobalData result = null;
+            IGlobalData result = default!;
 
             switch (type)
             {

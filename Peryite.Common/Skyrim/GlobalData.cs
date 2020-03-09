@@ -93,6 +93,7 @@ namespace Peryite.Common.Skyrim
                     result = new Audio().ReadData(br);
                     break;
                 case GlobalDataType.SkyCells:
+                    result = new SkyCells().ReadData(br);
                     break;
                 case GlobalDataType.ProcessLists:
                     break;

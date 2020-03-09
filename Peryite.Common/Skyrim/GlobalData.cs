@@ -87,6 +87,7 @@ namespace Peryite.Common.Skyrim
                     result = new Effects().ReadData(br);
                     break;
                 case GlobalDataType.Weather:
+                    result = new Weather().ReadData(br);
                     break;
                 case GlobalDataType.Audio:
                     break;

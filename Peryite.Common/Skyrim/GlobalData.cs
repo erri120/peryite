@@ -99,6 +99,7 @@ namespace Peryite.Common.Skyrim
                     result = new ProcessLists().ReadData(br);
                     break;
                 case GlobalDataType.Combat:
+                    result = new Combat().ReadData(br);
                     break;
                 case GlobalDataType.Interface:
                     break;

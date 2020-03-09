@@ -96,6 +96,7 @@ namespace Peryite.Common.Skyrim
                     result = new SkyCells().ReadData(br);
                     break;
                 case GlobalDataType.ProcessLists:
+                    result = new ProcessLists().ReadData(br);
                     break;
                 case GlobalDataType.Combat:
                     break;

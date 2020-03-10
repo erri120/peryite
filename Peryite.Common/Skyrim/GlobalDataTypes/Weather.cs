@@ -1,59 +1,47 @@
-﻿using System;
-using System.IO;
-
-namespace Peryite.Common.Skyrim.GlobalDataTypes
+﻿namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
     public class Weather : IGlobalData
     {
         public GlobalDataType Type => GlobalDataType.Weather;
 
+        [Read(1)]
         public RefID Climate;
+        [Read(2)]
         public RefID CurrentWeather;
+        [Read(3)]
         public RefID PrevWeather;
+        [Read(4)]
         public RefID UnknownWeather1;
+        [Read(5)]
         public RefID UnknownWeather2;
+        [Read(6)]
         public RefID UnknownWeather3;
-
+        
+        [Read(7)]
         public float CurrentTime;
+        [Read(8)]
         public float StartTime;
+        [Read(9)]
         public float WeatherTransition;
 
+        [Read(10)]
         public uint Unknown1;
+        [Read(11)]
         public uint Unknown2;
+        [Read(12)]
         public uint Unknown3;
+        [Read(13)]
         public uint Unknown4;
+        [Read(14)]
         public uint Unknown5;
+        [Read(15)]
         public uint Unknown6;
+        [Read(16)]
         public float Unknown7;
+        [Read(17)]
         public uint Unknown8;
-
+        
+        [Read(18)]
         public byte Flags;
-
-        public IGlobalData ReadData(BinaryReader br)
-        {
-            Climate = br.ReadRefID();
-            CurrentWeather = br.ReadRefID();
-            PrevWeather = br.ReadRefID();
-            UnknownWeather1 = br.ReadRefID();
-            UnknownWeather2 = br.ReadRefID();
-            UnknownWeather3 = br.ReadRefID();
-
-            CurrentTime = br.ReadSingle();
-            StartTime = br.ReadSingle();
-            WeatherTransition = br.ReadSingle();
-
-            Unknown1 = br.ReadUInt32();
-            Unknown2 = br.ReadUInt32();
-            Unknown3 = br.ReadUInt32();
-            Unknown4 = br.ReadUInt32();
-            Unknown5 = br.ReadUInt32();
-            Unknown6 = br.ReadUInt32();
-            Unknown7 = br.ReadSingle();
-            Unknown8 = br.ReadUInt32();
-
-            Flags = br.ReadByte();
-
-            return this;
-        }
     }
 }

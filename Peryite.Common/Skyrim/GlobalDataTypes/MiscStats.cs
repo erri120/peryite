@@ -1,35 +1,24 @@
-﻿using System.IO;
-
-namespace Peryite.Common.Skyrim.GlobalDataTypes
+﻿namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
     public class MiscStats : IGlobalData
     {
         public GlobalDataType Type => GlobalDataType.MiscStats;
 
-        public uint Count;
-        public MiscStat[] Stats = default!;
+        private uint _count;
 
-        public IGlobalData ReadData(BinaryReader br)
+        [Read(1)]
+        public uint Count
         {
-            Count = br.ReadUInt32();
-            Stats = new MiscStat[Count];
-            for (var i = 0; i < Count; i++)
+            get => _count;
+            set
             {
-                var stat = new MiscStat
-                {
-                    Name = br.ReadWString()
-                };
-
-                var category = br.ReadByte();
-
-                stat.Category = (MiscStatCategory) category;
-                stat.Value = br.ReadInt32();
-
-                Stats[i] = stat;
+                _count = value;
+                Stats = new MiscStat[_count];
             }
-
-            return this;
         }
+
+        [Read(2)]
+        public MiscStat[]? Stats;
     }
 
     public enum MiscStatCategory
@@ -45,8 +34,13 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
 
     public struct MiscStat
     {
+        [Read(1)]
         public WString Name;
+
+        [Read(2, EnumType = typeof(byte))]
         public MiscStatCategory Category;
+
+        [Read(3)]
         public int Value;
     }
 }

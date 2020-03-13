@@ -100,6 +100,7 @@ namespace Peryite.Common.Skyrim
                     result = new Combat().ReadThis(br);
                     break;
                 case GlobalDataType.Interface:
+                    result = new Interface().ReadThis(br);
                     break;
                 case GlobalDataType.ActorCauses:
                     break;

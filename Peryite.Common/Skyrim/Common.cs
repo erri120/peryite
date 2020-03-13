@@ -342,6 +342,8 @@ namespace Peryite.Common.Skyrim
                             instance = br.ReadWString();
                         else if (type == typeof(VSVAL))
                             instance = br.ReadVSVAL();
+                        else if (type == typeof(uint))
+                            instance = br.ReadUInt32();
                         else
                             instance = Activator.CreateInstance(type).ReadThis(br);
 

@@ -113,6 +113,7 @@ namespace Peryite.Common.Skyrim
                     result = new DetectionManager().ReadThis(br);
                     break;
                 case GlobalDataType.LocationMetaData:
+                    result = new LocationMetaData().ReadThis(br);
                     break;
                 case GlobalDataType.QuestStaticData:
                     break;

@@ -103,6 +103,7 @@ namespace Peryite.Common.Skyrim
                     result = new Interface().ReadThis(br);
                     break;
                 case GlobalDataType.ActorCauses:
+                    result = new ActorCauses().ReadThis(br);
                     break;
                 case GlobalDataType.Unknown104:
                     break;

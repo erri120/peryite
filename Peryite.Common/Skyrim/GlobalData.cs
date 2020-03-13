@@ -119,6 +119,7 @@ namespace Peryite.Common.Skyrim
                     result = new QuestStaticData().ReadThis(br);
                     break;
                 case GlobalDataType.StoryTeller:
+                    result = new StoryTeller().ReadThis(br);
                     break;
                 case GlobalDataType.MagicFavorites:
                     break;

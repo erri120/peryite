@@ -110,6 +110,7 @@ namespace Peryite.Common.Skyrim
                         "Your save file contains an unknown global data type. Type number 104 normally does not appear in save files. Please open an Issue on GitHub with your save file!",
                         br);
                 case GlobalDataType.DetectionManager:
+                    result = new DetectionManager().ReadThis(br);
                     break;
                 case GlobalDataType.LocationMetaData:
                     break;

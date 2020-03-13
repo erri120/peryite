@@ -106,7 +106,9 @@ namespace Peryite.Common.Skyrim
                     result = new ActorCauses().ReadThis(br);
                     break;
                 case GlobalDataType.Unknown104:
-                    break;
+                    throw new CorruptedSaveFileException(
+                        "Your save file contains an unknown global data type. Type number 104 normally does not appear in save files. Please open an Issue on GitHub with your save file!",
+                        br);
                 case GlobalDataType.DetectionManager:
                     break;
                 case GlobalDataType.LocationMetaData:

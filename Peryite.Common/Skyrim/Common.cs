@@ -161,6 +161,11 @@ namespace Peryite.Common.Skyrim
         public string? Name;
     }
 
+    public abstract class AReadClass
+    {
+        public abstract AReadClass ReadData(BinaryReader br);
+    }
+
     public static partial class BinaryReaderExtensions
     {
         /// <summary>
@@ -174,6 +179,11 @@ namespace Peryite.Common.Skyrim
         {
             if (t == null)
                 return default!;
+
+            if (t is AReadClass readClass)
+            {
+                return (T)(object)readClass.ReadData(br);
+            }
 
             // we start by getting all public properties and fields from the class
             // they need the ReadAttribute and an order because GetMembers() is not sorted

@@ -78,11 +78,11 @@
                 set
                 {
                     _count1 = value;
-                    UnknownArray = new Unknown0[_count1.Value];
+                    UnknownArray = new Unknown00[_count1.Value];
                 }
             }
             [Read(2, IsCustomType = true)]
-            public Unknown0[]? UnknownArray;
+            public Unknown00[]? UnknownArray;
             private VSVAL _count2;
             
             [Read(3)]

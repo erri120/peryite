@@ -43,8 +43,6 @@ namespace Peryite.Common.Skyrim
     public interface IGlobalData
     {
         GlobalDataType Type { get; }
-
-        IGlobalData ReadData(BinaryReader br);
     }
 
     public static partial class BinaryReaderExtensions
@@ -69,37 +67,37 @@ namespace Peryite.Common.Skyrim
             switch (type)
             {
                 case GlobalDataType.MiscStats:
-                    result = new MiscStats().ReadData(br);
+                    result = new MiscStats().ReadThis(br);
                     break;
                 case GlobalDataType.PlayerLocation:
-                    result = new PlayerLocation().ReadData(br);
+                    result = new PlayerLocation().ReadThis(br);
                     break;
                 case GlobalDataType.TES:
-                    result = new TES().ReadData(br);
+                    result = new TES().ReadThis(br);
                     break;
                 case GlobalDataType.GlobalVariables:
-                    result = new GlobalVariables().ReadData(br);
+                    result = new GlobalVariables().ReadThis(br);
                     break;
                 case GlobalDataType.CreatedObject:
-                    result = new CreatedObjects().ReadData(br);
+                    result = new CreatedObjects().ReadThis(br);
                     break;
                 case GlobalDataType.Effects:
-                    result = new Effects().ReadData(br);
+                    result = new Effects().ReadThis(br);
                     break;
                 case GlobalDataType.Weather:
-                    result = new Weather().ReadData(br);
+                    result = new Weather().ReadThis(br);
                     break;
                 case GlobalDataType.Audio:
-                    result = new Audio().ReadData(br);
+                    result = new Audio().ReadThis(br);
                     break;
                 case GlobalDataType.SkyCells:
-                    result = new SkyCells().ReadData(br);
+                    result = new SkyCells().ReadThis(br);
                     break;
                 case GlobalDataType.ProcessLists:
-                    result = new ProcessLists().ReadData(br);
+                    result = new ProcessLists().ReadThis(br);
                     break;
                 case GlobalDataType.Combat:
-                    result = new Combat().ReadData(br);
+                    result = new Combat().ReadThis(br);
                     break;
                 case GlobalDataType.Interface:
                     break;

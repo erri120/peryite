@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace Peryite.Common.Skyrim
 {
@@ -135,8 +138,258 @@ namespace Peryite.Common.Skyrim
         #endregion
     }
 
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public class ReadAttribute : Attribute
+    {
+        public int Order;
+        public Type? EnumType;
+        public bool IsCustomType;
+
+        public ReadAttribute(int order)
+        {
+            Order = order;
+        }
+    }
+
+    public class ConditionalParsing : Attribute
+    {
+        public Type? Type;
+        public bool And;
+        public bool Not;
+        public object[]? Chaining;
+        public Type? ChainingType;
+        public string? Name;
+    }
+
     public static partial class BinaryReaderExtensions
     {
+        /// <summary>
+        /// This very useful extension uses Reflection to read all needed data from the save file
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="br"></param>
+        /// <returns></returns>
+        public static T ReadThis<T>(this T t, BinaryReader br)
+        {
+            if (t == null)
+                return default!;
+
+            // we start by getting all public properties and fields from the class
+            // they need the ReadAttribute and an order because GetMembers() is not sorted
+            // adding the MemberInfo and the ReadAttribute to a dictionary will simplify some
+            // later operations
+
+            var dic = new Dictionary<MemberInfo, ReadAttribute>();
+
+            IOrderedEnumerable<MemberInfo> members = t.GetType().GetMembers()
+                .Where(m => m.MemberType == MemberTypes.Property || m.MemberType == MemberTypes.Field)
+                .OrderBy(m =>
+                {
+                    var attr = (ReadAttribute[]) m.GetCustomAttributes(typeof(ReadAttribute));
+
+                    if (attr.Length != 1)
+                        return 0;
+
+                    var current = attr[0];
+                    dic.Add(m, current);
+                    return current.Order;
+                });
+
+            members.Do(m =>
+            {
+                if (!dic.TryGetValue(m, out var attribute))
+                    return;
+
+                /*
+                 *  we start by checking if we should even read and fill the member
+                 *  if the Member has the ConditionalParsing Attribute, we need to determine
+                 *  whether we should parse it
+                 */
+
+                var conditionalAttributes = (ConditionalParsing[]) m.GetCustomAttributes(typeof(ConditionalParsing));
+
+                var statement = true;
+
+                if (conditionalAttributes.Length == 1)
+                {
+                    var cur = conditionalAttributes[0];
+
+                    if (cur.Chaining == null || cur.Chaining.Length == 0)
+                        return;
+                    
+                    /*
+                     * Example condition if the type is an Enum:
+                     * if (CrimeType == CrimeType.Theft || CrimeType == CrimeType.Pickpocketing)
+                     *
+                     * translating that means getting the compare value first since enums
+                     * can be represented using integer based values, we can simply convert
+                     * it to the appropriate type using Convert.ChangeType
+                     */
+
+                    var isEnum = cur.Type != null && cur.Type.IsEnum;
+                    var isName = !string.IsNullOrWhiteSpace(cur.Name);
+
+                    var (key, readAttribute) = dic.First(x =>
+                    {
+                        var (memberInfo, _) = x;
+
+                        if (memberInfo is FieldInfo fieldInfo)
+                        {
+                            if(isName)
+                                return fieldInfo.Name == cur.Name;
+                            if(isEnum)
+                                return fieldInfo.FieldType == cur.Type;
+                        }
+
+                        if (!(memberInfo is PropertyInfo propertyInfo)) return false;
+
+                        if(isName)
+                            return propertyInfo.Name == cur.Name;
+                        if(isEnum)
+                            return propertyInfo.PropertyType == cur.Type;
+
+
+                        return false;
+                    });
+
+                    object? compareValueObject = null;
+
+                    if (key is FieldInfo compareField)
+                    {
+                        compareValueObject = compareField.GetValue(t);
+                    } else if (key is PropertyInfo compareProperty)
+                    {
+                        compareValueObject = compareProperty.GetValue(t);
+                    }
+
+                    if (compareValueObject == null)
+                        return;
+
+                    object? compareValue = null;
+
+                    if (isEnum)
+                    {
+                        // here we convert the enum to an integer based value, eg: CrimeType.Theft becomes 0
+                        compareValue = Convert.ChangeType(compareValueObject, readAttribute.EnumType);
+                    } else if (isName)
+                    {
+                        compareValue = Convert.ChangeType(compareValueObject, cur.ChainingType);
+                    }
+
+                    if (compareValue == null)
+                        return;
+
+                    // simple compare function using .Equals instead of ==
+                    bool CompareFunc(object x)
+                    {
+                        var value = Convert.ChangeType(x, cur.ChainingType);
+                        if(cur.Not)
+                            return value.GetType() != compareValue.GetType() && value.Equals(compareValue);
+                        return value.GetType() == compareValue.GetType() && value.Equals(compareValue);
+                    }
+
+                    // And = true means ALL conditions need to be true so we use the .All extension
+                    // for And = true it's the opposite: .Any
+                    statement = cur.And ? cur.Chaining.All(CompareFunc) : cur.Chaining.Any(CompareFunc);
+                }
+
+                // if the condition, parsed above, is not true we exit
+                if (!statement)
+                    return;
+
+                // properties are only used for counts which have a special setter
+                // that initializes an array
+
+                if (m is PropertyInfo p)
+                {
+                    if(p.PropertyType == typeof(uint))
+                        p.SetValue(t, br.ReadUInt32());
+                    else if(p.PropertyType == typeof(VSVAL))
+                        p.SetValue(t, br.ReadVSVAL());
+
+                    return;
+                }
+
+                if (!(m is FieldInfo f)) return;
+
+                if (!f.IsPublic)
+                    return;
+
+                /*
+                 * arrays are very funny:
+                 * arrays are being initialized by the property setter of a count which is
+                 * read before. We then iterate of the array and call the appropriate Read
+                 * Extension
+                 */
+
+                if (f.FieldType.IsArray)
+                {
+                    var arr = (Array) f.GetValue(t);
+                    if (arr == null || arr.Length == 0)
+                        return;
+                    var type = arr.GetType().HasElementType ? arr.GetType().GetElementType() :
+                        arr.GetValue(0)?.GetType();
+                    if (type == null)
+                        return;
+                    for (var i = 0; i < arr.Length; i++)
+                    {
+                        object instance;
+
+                        if (type == typeof(RefID))
+                            instance = br.ReadRefID();
+                        else if (type == typeof(WString))
+                            instance = br.ReadWString();
+                        else if (type == typeof(VSVAL))
+                            instance = br.ReadVSVAL();
+                        else
+                            instance = Activator.CreateInstance(type).ReadThis(br);
+
+                        arr.SetValue(instance, i);
+                    }
+                    f.SetValue(t, arr);
+                } else if (f.FieldType.IsEnum)
+                {
+                    if (attribute.EnumType == null)
+                        return;
+
+                    FillFieldInfo(ref f, br, attribute.EnumType, t);
+                } else if (attribute.IsCustomType)
+                {
+                    var value = Activator.CreateInstance(f.FieldType).ReadThis(br);
+                    f.SetValue(t, value);
+                }
+                else
+                {
+                    FillFieldInfo(ref f, br, f.FieldType, t);
+                }
+            });
+
+            return t;
+        }
+
+        public static void FillFieldInfo(ref FieldInfo f, BinaryReader br, Type type, object o)
+        {
+            if(type == typeof(byte))
+                f.SetValue(o, br.ReadByte());
+            else if(type == typeof(uint))
+                f.SetValue(o, br.ReadUInt32());
+            else if(type == typeof(ushort))
+                f.SetValue(o, br.ReadUInt16());
+            else if(type == typeof(int))
+                f.SetValue(o, br.ReadInt32());
+            else if(type == typeof(float))
+                f.SetValue(o, br.ReadSingle());
+            else if(type == typeof(WString))
+                f.SetValue(o, br.ReadWString());
+            else if(type == typeof(RefID))
+                f.SetValue(o, br.ReadRefID());
+            else if(type == typeof(VSVAL))
+                f.SetValue(o, br.ReadVSVAL());
+            else
+                throw new ArgumentException($"The provided type {type} is not valid!");
+        }
+
         public static WString ReadWString(this BinaryReader br)
         {
             var result = new WString

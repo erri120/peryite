@@ -1,108 +1,113 @@
-﻿using System.IO;
-
-namespace Peryite.Common.Skyrim.GlobalDataTypes
+﻿namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
     public class CreatedObjects : IGlobalData
     {
         public GlobalDataType Type => GlobalDataType.CreatedObject;
 
-        public VSVAL WeaponCount;
-        public Enchantment[] WeaponEnchantments = default!;
-        public VSVAL ArmorCount;
-        public Enchantment[] ArmorEnchantments = default!;
-        public VSVAL PotionCount;
-        public Enchantment[] Potions = default!;
-        public VSVAL PoisonCount;
-        public Enchantment[] Poisons = default!;
+        private VSVAL _weaponCount;
 
-        public IGlobalData ReadData(BinaryReader br)
+        [Read(1)]
+        public VSVAL WeaponCount
         {
-            WeaponCount = br.ReadVSVAL();
-            WeaponEnchantments = new Enchantment[WeaponCount.Value];
-
-            for (var i = 0; i < WeaponCount; i++)
+            get => _weaponCount;
+            set
             {
-                WeaponEnchantments[i] = new Enchantment().ReadEnchantment(br);
+                _weaponCount = value;
+                WeaponEnchantments = new Enchantment[_weaponCount.Value];
             }
-
-            ArmorCount = br.ReadVSVAL();
-            ArmorEnchantments = new Enchantment[ArmorCount.Value];
-
-            for (var i = 0; i < ArmorCount; i++)
-            {
-                ArmorEnchantments[i] = new Enchantment().ReadEnchantment(br);
-            }
-
-            PotionCount = br.ReadVSVAL();
-            Potions = new Enchantment[PotionCount.Value];
-
-            for (var i = 0; i < PotionCount; i++)
-            {
-                Potions[i] = new Enchantment().ReadEnchantment(br);
-            }
-
-            PoisonCount = br.ReadVSVAL();
-            Poisons = new Enchantment[PoisonCount.Value];
-
-            for (var i = 0; i < PoisonCount; i++)
-            {
-                Poisons[i] = new Enchantment().ReadEnchantment(br);
-            }
-
-            return this;
         }
+        [Read(2)]
+        public Enchantment[]? WeaponEnchantments;
+
+        private VSVAL _armorCount;
+
+        [Read(3)]
+        public VSVAL ArmorCount
+        {
+            get => _armorCount;
+            set
+            {
+                _armorCount = value;
+                ArmorEnchantments = new Enchantment[_armorCount.Value];
+            }
+        }
+        [Read(4)]
+        public Enchantment[]? ArmorEnchantments;
+
+        private VSVAL _potionCount;
+
+        [Read(5)]
+        public VSVAL PotionCount
+        {
+            get => _potionCount;
+            set
+            {
+                _potionCount = value;
+                Potions = new Enchantment[_potionCount.Value];
+            }
+        }
+        [Read(6)]
+        public Enchantment[]? Potions;
+
+        private VSVAL _poisonCount;
+
+        [Read(7)]
+        public VSVAL PoisonCount
+        {
+            get => _poisonCount;
+            set
+            {
+                _poisonCount = value;
+                Poisons = new Enchantment[_poisonCount.Value];
+            }
+        }
+        [Read(8)]
+        public Enchantment[]? Poisons;
 
         public class Enchantment
         {
+            [Read(1)]
             public RefID RefID;
+            [Read(2)]
             public uint TimesUsed;
-            public VSVAL MagicEffectsCount;
-            public MagicEffect[] Effects = default!;
 
-            public Enchantment ReadEnchantment(BinaryReader br)
+            private VSVAL _magicEffectsCount;
+
+            [Read(3)]
+            public VSVAL MagicEffectsCount
             {
-                RefID = br.ReadRefID();
-                TimesUsed = br.ReadUInt32();
-                MagicEffectsCount = br.ReadVSVAL();
-
-                Effects = new MagicEffect[MagicEffectsCount.Value];
-
-                for (var i = 0; i < MagicEffectsCount; i++)
+                get => _magicEffectsCount;
+                set
                 {
-                    Effects[i] = new MagicEffect().ReadMagicEffect(br);
+                    _magicEffectsCount = value;
+                    Effects = new MagicEffect[_magicEffectsCount.Value];
                 }
-
-                return this;
             }
+            [Read(4)]
+            public MagicEffect[]? Effects;
         }
 
         public class MagicEffect
         {
+            [Read(1)]
             public RefID EffectID;
+
+            [Read(2)]
             public EnchantmentInfo Info;
+
+            [Read(3)]
             public float Price;
-
-            public MagicEffect ReadMagicEffect(BinaryReader br)
-            {
-                EffectID = br.ReadRefID();
-
-                Info = new EnchantmentInfo
-                {
-                    Magnitude = br.ReadSingle(),
-                    Duration = br.ReadUInt32(),
-                    Area = br.ReadUInt32()
-                };
-
-                Price = br.ReadSingle();
-
-                return this;
-            }
         }
 
         public struct EnchantmentInfo
         {
+            [Read(1)]
             public float Magnitude;
+
+            [Read(2)]
             public uint Duration;
+            
+            [Read(3)]
             public uint Area;
         }
     }

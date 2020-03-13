@@ -1,35 +1,29 @@
-﻿using System.IO;
-
-namespace Peryite.Common.Skyrim.GlobalDataTypes
+﻿namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
     public class SkyCells : IGlobalData
     {
         public GlobalDataType Type => GlobalDataType.SkyCells;
 
-        public VSVAL Count;
-        public Unknown0[] Unknown = default!;
+        private VSVAL _count;
 
-        public IGlobalData ReadData(BinaryReader br)
+        [Read(1)]
+        public VSVAL Count
         {
-            Count = br.ReadVSVAL();
-            Unknown = new Unknown0[Count.Value];
-
-            for (var i = 0; i < Count; i++)
+            get => _count;
+            set
             {
-                Unknown[i] = new Unknown0
-                {
-                    Unknown1 = br.ReadRefID(),
-                    Unknown2 = br.ReadRefID()
-                };
+                _count = value;
+                Unknown = new Unknown0[_count.Value];
             }
-
-
-            return this;
         }
+        [Read(2)]
+        public Unknown0[]? Unknown;
 
         public struct Unknown0
         {
+            [Read(1)]
             public RefID Unknown1;
+            [Read(2)]
             public RefID Unknown2;
         }
     }

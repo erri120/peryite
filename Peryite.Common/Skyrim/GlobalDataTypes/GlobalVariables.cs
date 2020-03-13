@@ -1,35 +1,31 @@
-﻿using System.IO;
-
-namespace Peryite.Common.Skyrim.GlobalDataTypes
+﻿namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
     public class GlobalVariables : IGlobalData
     {
         public GlobalDataType Type => GlobalDataType.GlobalVariables;
 
-        public VSVAL Count;
-        public GlobalVariable[] Globals = default!;
+        private VSVAL _count;
 
-        public IGlobalData ReadData(BinaryReader br)
+        [Read(1)]
+        public VSVAL Count
         {
-            Count = br.ReadVSVAL();
-
-            Globals = new GlobalVariable[Count.Value];
-
-            for (var i = 0; i < Count; i++)
+            get => _count;
+            set
             {
-                Globals[i] = new GlobalVariable
-                {
-                    FormID = br.ReadRefID(),
-                    Value = br.ReadSingle()
-                };
+                _count = value;
+                Globals = new GlobalVariable[_count.Value];
             }
-
-            return this;
         }
+
+        [Read(2)]
+        public GlobalVariable[]? Globals;
 
         public class GlobalVariable
         {
+            [Read(1)]
             public RefID FormID;
+
+            [Read(2)]
             public float Value;
         }
     }

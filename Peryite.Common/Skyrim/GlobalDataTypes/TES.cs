@@ -1,55 +1,63 @@
-﻿using System.IO;
-
-namespace Peryite.Common.Skyrim.GlobalDataTypes
+﻿namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
     public class TES : IGlobalData
     {
         public GlobalDataType Type => GlobalDataType.TES;
 
-        public VSVAL Count1;
-        public Unknown0[] Unknown1 = default!;
-        public uint Count2;
-        public RefID[] Unknown2 = default!;
-        public VSVAL Count3;
-        public RefID[] Unknown3 = default!;
+        private VSVAL _count1;
 
-        public IGlobalData ReadData(BinaryReader br)
+        [Read(1)]
+        public VSVAL Count1
         {
-            Count1 = br.ReadVSVAL();
-            Unknown1 = new Unknown0[Count1.Value];
-
-            for (var i = 0; i < Count1; i++)
+            get => _count1;
+            set
             {
-                Unknown1[i] = new Unknown0
-                {
-                    FormID = br.ReadRefID(),
-                    Unknown = br.ReadUInt16()
-                };
+                _count1 = value;
+                Unknown1 = new Unknown0[_count1.Value];
             }
-
-            Count2 = br.ReadUInt32();
-            Unknown2 = new RefID[Count2 * Count2];
-
-            for (var i = 0; i < Unknown2.Length; i++)
-            {
-                Unknown2[i] = br.ReadRefID();
-            }
-
-            Count3 = br.ReadVSVAL();
-
-            Unknown3 = new RefID[Count3.Value];
-
-            for (var i = 0; i < Count3; i++)
-            {
-                Unknown3[i] = br.ReadRefID();
-            }
-
-            return this;
         }
+
+        [Read(2)]
+        public Unknown0[]? Unknown1;
+
+        private uint _count2;
+
+        [Read(3)]
+        public uint Count2
+        {
+            get => _count2;
+            set
+            {
+                _count2 = value;
+                Unknown2 = new RefID[_count2 * _count2];
+            }
+        }
+
+        [Read(4)]
+        public RefID[]? Unknown2;
+
+        private VSVAL _count3;
+
+        [Read(5)]
+        public VSVAL Count3
+        {
+            get => _count3;
+            set
+            {
+                _count3 = value;
+                Unknown3 = new RefID[_count3.Value];
+            }
+        }
+
+        [Read(6)]
+        public RefID[]? Unknown3;
 
         public struct Unknown0
         {
+            [Read(1)]
             public RefID FormID;
+
+            [Read(2)]
             public ushort Unknown;
         }
     }

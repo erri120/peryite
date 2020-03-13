@@ -1,522 +1,437 @@
-﻿using System.IO;
-
-namespace Peryite.Common.Skyrim.GlobalDataTypes
+﻿namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
     public class Combat : IGlobalData
     {
         public GlobalDataType Type => GlobalDataType.Combat;
 
+        [Read(1)]
         public uint NextNumber;
 
-        public VSVAL Count0;
-        public Unknown0[] Unknown0Array = default!;
+        private VSVAL _count0;
 
-        public VSVAL Count1;
-        public Unknown1[] Unknown1Array = default!;
+        [Read(2)]
+        public VSVAL Count0
+        {
+            get => _count0;
+            set
+            {
+                _count0 = value;
+                Unknown0Array = new Unknown0[_count0.Value];
+            }
+        }
+        [Read(3)]
+        public Unknown0[]? Unknown0Array;
 
+        private VSVAL _count1;
+
+        [Read(4)]
+        public VSVAL Count1
+        {
+            get => _count1;
+            set
+            {
+                _count1 = value;
+                Unknown1Array = new Unknown1[_count1.Value];
+            }
+        }
+        [Read(5)]
+        public Unknown1[]? Unknown1Array;
+        
+        [Read(6)]
         public float UnknownFloat1;
+        [Read(7)]
         public VSVAL UnknownVSVAL1;
 
-        public VSVAL Count2;
-        public RefID[] UnknownRefIDArray = default!;
+        private VSVAL _count2;
 
-        public float UnknownFloat2;
-        public UnknownStruct UnknownStruct1;
-        public UnknownStruct UnknownStruct2;
-
-
-        public IGlobalData ReadData(BinaryReader br)
+        [Read(8)]
+        public VSVAL Count2
         {
-            NextNumber = br.ReadUInt32();
-
-            Count0 = br.ReadVSVAL();
-            Unknown0Array = new Unknown0[Count0.Value];
-
-            for (var i = 0; i < Count0; i++)
+            get => _count2;
+            set
             {
-                Unknown0Array[i] = new Unknown0().ReadData(br);
+                _count2 = value;
+                UnknownRefIDArray = new RefID[_count2.Value];
             }
-
-            Count1 = br.ReadVSVAL();
-            Unknown1Array = new Unknown1[Count1.Value];
-
-            for (var i = 0; i < Count1; i++)
-            {
-                Unknown1Array[i] = new Unknown1().ReadData(br);
-            }
-
-            UnknownFloat1 = br.ReadSingle();
-            UnknownVSVAL1 = br.ReadVSVAL();
-
-            Count2 = br.ReadVSVAL();
-            UnknownRefIDArray = new RefID[Count2.Value];
-
-            for (var i = 0; i < Count2; i++)
-            {
-                UnknownRefIDArray[i] = br.ReadRefID();
-            }
-
-            UnknownFloat2 = br.ReadSingle();
-            UnknownStruct1 = new UnknownStruct().ReadData(br);
-            UnknownStruct2 = new UnknownStruct().ReadData(br);
-
-            return this;
         }
+        [Read(9)]
+        public RefID[]? UnknownRefIDArray;
+        
+        [Read(10)]
+        public float UnknownFloat2;
+        [Read(11, IsCustomType = true)]
+        public UnknownStruct UnknownStruct1;
+        [Read(12, IsCustomType = true)]
+        public UnknownStruct UnknownStruct2;
 
         public class Unknown0
         {
+            [Read(1)]
             public uint UnknownUInt32;
+            [Read(2)]
             public uint SerialNumber;
-            public Unknown00 Unknown = default!;
-
-            public Unknown0 ReadData(BinaryReader br)
-            {
-                UnknownUInt32 = br.ReadUInt32();
-                SerialNumber = br.ReadUInt32();
-                Unknown = new Unknown00().ReadData(br);
-
-                return this;
-            }
+            [Read(3, IsCustomType = true)]
+            public Unknown00? Unknown;
 
             public class Unknown00
             {
-                public VSVAL Count0;
-                public Unknown000[] Unknown000Array = default!;
+                private VSVAL _count0;
 
-                public VSVAL Count1;
-                public Unknown001[] Unknown001Array = default!;
+                [Read(1)]
+                public VSVAL Count0
+                {
+                    get => _count0;
+                    set
+                    {
+                        _count0 = value;
+                        Unknown000Array = new Unknown000[_count0.Value];
+                    }
+                }
+                [Read(2)]
+                public Unknown000[]? Unknown000Array;
 
+                private VSVAL _count1;
+
+                [Read(3)]
+                public VSVAL Count1
+                {
+                    get => _count1;
+                    set
+                    {
+                        _count1 = value;
+                        Unknown001Array = new Unknown001[_count1.Value];
+                    }
+                }
+                [Read(4)]
+                public Unknown001[]? Unknown001Array;
+                
+                [Read(5, IsCustomType = true)]
                 public UnknownStruct UnknownStruct1;
+                [Read(6, IsCustomType = true)]
                 public UnknownStruct UnknownStruct2;
+                [Read(7, IsCustomType = true)]
                 public UnknownStruct UnknownStruct3;
+                [Read(8, IsCustomType = true)]
                 public UnknownStruct UnknownStruct4;
+                [Read(9)]
                 public UnknownStruct[] UnknownStructArray = new UnknownStruct[11];
-
+                
+                [Read(10)]
                 public uint UnknownFlag;
                 
                 /// <summary>
                 /// Only present if <see cref="UnknownFlag"/> is not zero
                 /// </summary>
+                [Read(11, IsCustomType = true)]
+                [ConditionalParsing(Name = nameof(UnknownFlag), And = true, Chaining = new[] {(object) 0},
+                    ChainingType = typeof(uint), Not = true)]
                 public Unknown002? Unknown002Field;
-
+                
+                [Read(12, IsCustomType = true)]
                 public UnknownStruct UnknownStruct5;
-
+                
+                [Read(13)]
                 public float UnknownFloat1;
+                [Read(14)]
                 public float UnknownFloat2;
+                [Read(15)]
                 public float UnknownFloat3;
+                [Read(16)]
                 public float UnknownFloat4;
-
+                
+                [Read(17, IsCustomType = true)]
                 public UnknownStruct UnknownStruct6;
-
+                
+                [Read(18)]
                 public byte UnknownByte;
-
-                public Unknown00 ReadData(BinaryReader br)
-                {
-                    Count0 = br.ReadVSVAL();
-                    Unknown000Array = new Unknown000[Count0.Value];
-
-                    for (var i = 0; i < Count0; i++)
-                    {
-                        Unknown000Array[i] = new Unknown000().ReadData(br);
-                    }
-
-                    Count1 = br.ReadVSVAL();
-                    Unknown001Array = new Unknown001[Count0.Value];
-
-                    for (var i = 0; i < Count1; i++)
-                    {
-                        Unknown001Array[i] = new Unknown001().ReadData(br);
-                    }
-
-                    UnknownStruct1 = new UnknownStruct().ReadData(br);
-                    UnknownStruct2 = new UnknownStruct().ReadData(br);
-                    UnknownStruct3 = new UnknownStruct().ReadData(br);
-                    UnknownStruct4 = new UnknownStruct().ReadData(br);
-
-                    for (var i = 0; i < UnknownStructArray.Length; i++)
-                    {
-                        UnknownStructArray[i] = new UnknownStruct().ReadData(br);
-                    }
-
-                    UnknownFlag = br.ReadByte();
-
-                    if(UnknownFlag != 0)
-                        Unknown002Field = new Unknown002().ReadData(br);
-
-                    UnknownStruct5 = new UnknownStruct().ReadData(br);
-
-                    UnknownFloat1 = br.ReadSingle();
-                    UnknownFloat2 = br.ReadSingle();
-                    UnknownFloat3 = br.ReadSingle();
-                    UnknownFloat4 = br.ReadSingle();
-
-                    UnknownStruct6 = new UnknownStruct().ReadData(br);
-                    UnknownByte = br.ReadByte();
-
-                    return this;
-                }
 
                 public class Unknown000
                 {
+                    [Read(1)]
                     public RefID UnknownRefID;
+                    [Read(2)]
                     public uint UnknownUInt32;
+                    [Read(3)]
                     public float UnknownFloat1;
+                    [Read(4)]
                     public ushort UnknownUshort1;
+                    [Read(5)]
                     public ushort UnknownUshort2;
-
+                    
+                    [Read(6)]
                     public RefID Target;
-
+                    
+                    [Read(7, IsCustomType = true)]
                     public Position UnknownPosition1;
+                    [Read(8, IsCustomType = true)]
                     public Position UnknownPosition2;
+                    [Read(9, IsCustomType = true)]
                     public Position UnknownPosition3;
+                    [Read(10, IsCustomType = true)]
                     public Position UnknownPosition4;
+                    [Read(11, IsCustomType = true)]
                     public Position UnknownPosition5;
-
+                    
+                    [Read(12)]
                     public float UnknownFloat2;
+                    [Read(13)]
                     public float UnknownFloat3;
+                    [Read(14)]
                     public float UnknownFloat4;
+                    [Read(15)]
                     public float UnknownFloat5;
+                    [Read(16)]
                     public float UnknownFloat6;
+                    [Read(17)]
                     public float UnknownFloat7;
-
-                    public Unknown000 ReadData(BinaryReader br)
-                    {
-                        UnknownRefID = br.ReadRefID();
-                        UnknownUInt32 = br.ReadUInt32();
-                        UnknownFloat1 = br.ReadSingle();
-                        UnknownUshort1 = br.ReadUInt16();
-                        UnknownUshort2 = br.ReadUInt16();
-
-                        Target = br.ReadRefID();
-
-                        UnknownPosition1 = new Position().ReadData(br);
-                        UnknownPosition2 = new Position().ReadData(br);
-                        UnknownPosition3 = new Position().ReadData(br);
-                        UnknownPosition4 = new Position().ReadData(br);
-                        UnknownPosition5 = new Position().ReadData(br);
-
-                        UnknownFloat2 = br.ReadSingle();
-                        UnknownFloat3 = br.ReadSingle();
-                        UnknownFloat4 = br.ReadSingle();
-                        UnknownFloat5 = br.ReadSingle();
-                        UnknownFloat6 = br.ReadSingle();
-                        UnknownFloat7 = br.ReadSingle();
-
-                        return this;
-                    }
                 }
 
                 public class Unknown001
                 {
+                    [Read(1)]
                     public RefID UnknownRefID;
+                    [Read(2)]
                     public float UnknownFloat1;
+                    [Read(3)]
                     public float UnknownFloat2;
-
-                    public Unknown001 ReadData(BinaryReader br)
-                    {
-                        UnknownRefID = br.ReadRefID();
-                        UnknownFloat1 = br.ReadSingle();
-                        UnknownFloat2 = br.ReadSingle();
-
-                        return this;
-                    }
                 }
 
                 public class Unknown002
                 {
+                    [Read(1)]
                     public RefID UnknownRefID;
+                    [Read(2, IsCustomType = true)]
                     public UnknownStruct UnknownStruct1;
+                    [Read(3, IsCustomType = true)]
                     public UnknownStruct UnknownStruct2;
-
+                    
+                    [Read(4)]
                     public float UnknownFloat1;
+                    [Read(5, IsCustomType = true)]
                     public Position UnknownPosition;
+                    [Read(6)]
                     public float UnknownFloat2;
 
-                    public VSVAL Count0;
-                    public Unknown0020[] Unknown0020Array = default!;
-                    public VSVAL Count1;
-                    public Unknown0021[] Unknown0021Array = default!;
+                    private VSVAL _count0;
 
+                    [Read(7)]
+                    public VSVAL Count0
+                    {
+                        get => _count0;
+                        set
+                        {
+                            _count0 = value;
+                            Unknown0020Array = new Unknown0020[_count0.Value];
+                        }
+                    }
+                    [Read(8)]
+                    public Unknown0020[]? Unknown0020Array;
+
+                    private VSVAL _count1;
+
+                    [Read(9)]
+                    public VSVAL Count1
+                    {
+                        get => _count1;
+                        set
+                        {
+                            _count1 = value;
+                            Unknown0021Array = new Unknown0021[_count1.Value];
+                        }
+                    }
+                    [Read(10)]
+                    public Unknown0021[]? Unknown0021Array;
+
+                    [Read(11)]
                     public byte UnknownFlag;
 
                     /// <summary>
                     /// Only present if <see cref="UnknownFlag"/> is not zero
                     /// </summary>
+                    [Read(12)]
+                    [ConditionalParsing(Name = nameof(UnknownFlag), And = true, Chaining = new[] {(object) 0},
+                        ChainingType = typeof(byte), Not = true)]
                     public Unknown0022? Unknown0022Field;
-
-                    public Unknown002 ReadData(BinaryReader br)
-                    {
-                        UnknownRefID = br.ReadRefID();
-                        UnknownStruct1 = new UnknownStruct
-                        {
-                            UnknownFloat1 = br.ReadSingle(),
-                            UnknownFloat2 = br.ReadSingle()
-                        };
-
-                        UnknownStruct2 = new UnknownStruct
-                        {
-                            UnknownFloat1 = br.ReadSingle(),
-                            UnknownFloat2 = br.ReadSingle()
-                        };
-
-                        UnknownFloat1 = br.ReadSingle();
-                        UnknownPosition = new Position().ReadData(br);
-                        UnknownFloat2 = br.ReadSingle();
-
-                        Count0 = br.ReadVSVAL();
-                        Unknown0020Array = new Unknown0020[Count0.Value];
-
-                        for (var i = 0; i < Count0; i++)
-                        {
-                            Unknown0020Array[i] = new Unknown0020().ReadData(br);
-                        }
-
-                        Count1 = br.ReadVSVAL();
-                        Unknown0021Array = new Unknown0021[Count1.Value];
-
-                        for (var i = 0; i < Count1; i++)
-                        {
-                            Unknown0021Array[i] = new Unknown0021().ReadData(br);
-                        }
-
-                        UnknownFlag = br.ReadByte();
-
-                        if(UnknownFlag != 0)
-                            Unknown0022Field = new Unknown0022().ReadData(br);
-
-                        return this;
-                    }
 
                     public class Unknown0020
                     {
+                        [Read(1, IsCustomType = true)]
                         public Position UnknownPosition;
+                        [Read(2)]
                         public uint UnknownUInt;
+                        [Read(3)]
                         public float UnknownFloat;
-
-                        public Unknown0020 ReadData(BinaryReader br)
-                        {
-                            UnknownPosition = new Position().ReadData(br);
-                            UnknownUInt = br.ReadUInt32();
-                            UnknownFloat = br.ReadSingle();
-                            
-                            return this;
-                        }
                     }
 
                     public class Unknown0021
                     {
+                        [Read(1)]
                         public RefID UnknownRefID1;
+                        [Read(2)]
                         public RefID UnknownRefID2;
-
+                        
+                        [Read(3)]
                         public byte UnknownByte1;
+                        [Read(4)]
                         public byte UnknownByte2;
+                        [Read(5)]
                         public byte UnknownByte3;
-
-                        public Unknown0021 ReadData(BinaryReader br)
-                        {
-                            UnknownRefID1 = br.ReadRefID();
-                            UnknownRefID2 = br.ReadRefID();
-
-                            UnknownByte1 = br.ReadByte();
-                            UnknownByte2 = br.ReadByte();
-                            UnknownByte3 = br.ReadByte();
-
-                            return this;
-                        }
                     }
 
                     public class Unknown0022
                     {
+                        [Read(1)]
                         public uint UnknownUInt1;
+                        [Read(2)]
                         public uint UnknownUInt2;
 
-                        public uint Count0;
-                        public Unknown00220[] Unknown00220Array = default!;
+                        private uint _count0;
 
+                        [Read(3)]
+                        public uint Count0
+                        {
+                            get => _count0;
+                            set
+                            {
+                                _count0 = value;
+                                Unknown00220Array = new Unknown00220[_count0];
+                            }
+                        }
+                        [Read(4)]
+                        public Unknown00220[]? Unknown00220Array;
+                        
+                        [Read(5)]
                         public RefID UnknownRefID1;
+                        [Read(6)]
                         public float UnknownFloat1;
+                        [Read(7)]
                         public float UnknownFloat2;
+                        [Read(8)]
                         public float UnknownFloat3;
+                        [Read(9)]
                         public float UnknownFloat4;
-
+                        
+                        [Read(10)]
                         public float UnknownFloat5;
+                        [Read(11)]
                         public RefID UnknownRefID2;
                         
+                        [Read(12)]
                         public float UnknownFloat6;
+                        [Read(13)]
                         public RefID UnknownRefID3;
-
+                        
+                        [Read(14)]
                         public ushort UnknownUShort;
+                        [Read(15)]
                         public byte UnknownByte1;
+                        [Read(16)]
                         public byte UnknownByte2;
-
+                        
+                        [Read(17)]
                         public float UnknownFloat7;
+                        [Read(18)]
                         public float UnknownFloat8;
-
-
-                        public Unknown0022 ReadData(BinaryReader br)
-                        {
-                            UnknownUInt1 = br.ReadUInt32();
-                            UnknownUInt2 = br.ReadUInt32();
-
-                            Count0 = br.ReadUInt32();
-                            Unknown00220Array = new Unknown00220[Count0];
-
-                            for (var i = 0; i < Count0; i++)
-                            {
-                                Unknown00220Array[i] = new Unknown00220().ReadData(br);
-                            }
-
-                            UnknownRefID1 = br.ReadRefID();
-                            UnknownFloat1 = br.ReadSingle();
-                            UnknownFloat2 = br.ReadSingle();
-                            UnknownFloat3 = br.ReadSingle();
-                            UnknownFloat4 = br.ReadSingle();
-
-                            
-                            UnknownFloat5 = br.ReadSingle();
-                            UnknownRefID2 = br.ReadRefID();
-
-                            UnknownFloat6 = br.ReadSingle();
-                            UnknownRefID3 = br.ReadRefID();
-
-                            UnknownUShort = br.ReadUInt16();
-                            UnknownByte1 = br.ReadByte();
-                            UnknownByte2 = br.ReadByte();
-
-                            UnknownFloat7 = br.ReadSingle();
-                            UnknownFloat8 = br.ReadSingle();
-
-                            return this;
-                        }
 
                         public class Unknown00220
                         {
+                            [Read(1)]
                             public byte UnknownByte;
-                            public uint Count0;
-                            public byte[] UnknownByteArray = default!;
-                            public RefID UnknownRefID;
-                            public uint UnknownUInt32;
 
-                            public Unknown00220 ReadData(BinaryReader br)
+                            private uint _count0;
+
+                            [Read(2)]
+                            public uint Count0
                             {
-                                UnknownByte = br.ReadByte();
-                                Count0 = br.ReadUInt32();
-                                UnknownByteArray = new byte[Count0];
-
-                                for (var i = 0; i < Count0; i++)
+                                get => _count0;
+                                set
                                 {
-                                    UnknownByteArray[i] = br.ReadByte();
+                                    _count0 = value;
+                                    UnknownByteArray = new byte[_count0];
                                 }
-
-                                UnknownRefID = br.ReadRefID();
-                                UnknownUInt32 = br.ReadUInt32();
-
-                                return this;
                             }
+                            [Read(3)]
+                            public byte[]? UnknownByteArray;
+                            [Read(4)]
+                            public RefID UnknownRefID;
+                            [Read(5)]
+                            public uint UnknownUInt32;
                         }
                     }
                 }
 
                 public struct Position
                 {
+                    [Read(1)]
                     public float X;
+                    [Read(2)]
                     public float Y;
+                    [Read(3)]
                     public float Z;
+                    [Read(4)]
                     public RefID CellID;
-
-                    public Position ReadData(BinaryReader br)
-                    {
-                        X = br.ReadSingle();
-                        Y = br.ReadSingle();
-                        Z = br.ReadSingle();
-                        CellID = br.ReadRefID();
-
-                        return this;
-                    }
                 }
             }
         }
 
         public class Unknown1
         {
+            [Read(1)]
             public RefID UnknownRefID;
+            [Read(2)]
             public float UnknownFloat;
-            public Unknown10 Unknown = default!;
-
-            public Unknown1 ReadData(BinaryReader br)
-            {
-                UnknownRefID = br.ReadRefID();
-                UnknownFloat = br.ReadSingle();
-                Unknown = new Unknown10().ReadData(br);
-
-                return this;
-            }
+            [Read(3, IsCustomType = true)]
+            public Unknown10? Unknown;
 
             public class Unknown10
             {
+                [Read(1)]
                 public RefID UnknownRefID1;
+                [Read(2)]
                 public RefID UnknownRefID2;
-
+                
+                [Read(3)]
                 public float UnknownFloat1;
+                [Read(4)]
                 public float UnknownFloat2;
+                [Read(5)]
                 public float UnknownFloat3;
-
+                
+                [Read(6)]
                 public float X;
+                [Read(7)]
                 public float Y;
+                [Read(8)]
                 public float Z;
-
+                
+                [Read(9)]
                 public float UnknownFloat4;
+                [Read(10)]
                 public float UnknownFloat5;
+                [Read(11)]
                 public float UnknownFloat6;
+                [Read(12)]
                 public float UnknownFloat7;
+                [Read(13)]
                 public float UnknownFloat8;
+                [Read(14)]
                 public float UnknownFloat9;
+                [Read(15)]
                 public float UnknownFloat10;
+                [Read(16)]
                 public float UnknownFloat11;
-
+                
+                [Read(17)]
                 public RefID UnknownRefID3;
-
-                public Unknown10 ReadData(BinaryReader br)
-                {
-                    UnknownRefID1 = br.ReadRefID();
-                    UnknownRefID2 = br.ReadRefID();
-
-                    UnknownFloat1 = br.ReadSingle();
-                    UnknownFloat2 = br.ReadSingle();
-                    UnknownFloat3 = br.ReadSingle();
-
-                    X = br.ReadSingle();
-                    Y = br.ReadSingle();
-                    Z = br.ReadSingle();
-
-                    UnknownFloat4 = br.ReadSingle();
-                    UnknownFloat5 = br.ReadSingle();
-                    UnknownFloat6 = br.ReadSingle();
-                    UnknownFloat7 = br.ReadSingle();
-                    UnknownFloat8 = br.ReadSingle();
-                    UnknownFloat9 = br.ReadSingle();
-                    UnknownFloat10 = br.ReadSingle();
-                    UnknownFloat11 = br.ReadSingle();
-
-                    UnknownRefID3 = br.ReadRefID();
-
-                    return this;
-                }
             }
         }
 
         public struct UnknownStruct
         {
+            [Read(1)]
             public float UnknownFloat1;
+            [Read(2)]
             public float UnknownFloat2;
-
-            public UnknownStruct ReadData(BinaryReader br)
-            {
-                UnknownFloat1 = br.ReadSingle();
-                UnknownFloat2 = br.ReadSingle();
-
-                return this;
-            }
         }
     }
 }

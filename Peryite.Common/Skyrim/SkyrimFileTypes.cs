@@ -94,11 +94,6 @@ namespace Peryite.Common.Skyrim
         public uint[] Unused;
     }
 
-    public struct ChangeForm
-    {
-
-    }
-
     public struct Unknown3Table
     {
 

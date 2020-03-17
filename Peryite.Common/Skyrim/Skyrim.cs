@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using ICSharpCode.SharpZipLib.Zip.Compression;
 using K4os.Compression.LZ4;
 
 namespace Peryite.Common.Skyrim
@@ -170,6 +171,34 @@ namespace Peryite.Common.Skyrim
             for (var i = 0; i < GlobalDataTable2.Length; i++)
             {
                 GlobalDataTable2[i] = br.ReadGlobalData(100, 114);
+            }
+
+            for (var i = 0; i < ChangeForms.Length; i++)
+            {
+                var changeForm = br.ReadChangeForm();
+
+                //check if data is compressed
+                if (changeForm.Length2 != 0)
+                {
+                    byte[] compressed = br.ReadBytes((int) changeForm.Length1);
+                    var decompressed = new byte[changeForm.Length2];
+
+                    var inflater = new Inflater();
+                    inflater.SetInput(compressed);
+                    var res = inflater.Inflate(decompressed);
+
+                    if(res != changeForm.Length2)
+                        throw new CorruptedSaveFileException($"Result of inflation resulted in a return value of {res}!", br);
+
+                    changeForm.Compression = SkyrimSaveFileCompression.ZLib;
+                    changeForm.Data = decompressed;
+                }
+                else
+                {
+                    changeForm.Data = br.ReadBytes((int) changeForm.Length1);
+                }
+
+                ChangeForms[i] = changeForm;
             }
 
             return;

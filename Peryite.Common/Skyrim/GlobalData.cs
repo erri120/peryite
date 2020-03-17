@@ -137,6 +137,7 @@ namespace Peryite.Common.Skyrim
                     result = new MenuControls().ReadThis(br);
                     break;
                 case GlobalDataType.MenuTopicManager:
+                    result = new MenuTopicManager().ReadThis(br);
                     break;
                 case GlobalDataType.TempEffects:
                     break;

@@ -128,6 +128,7 @@ namespace Peryite.Common.Skyrim
                     result = new PlayerControls().ReadThis(br);
                     break;
                 case GlobalDataType.StoryEventManager:
+                    result = new StoryEventManager().ReadThis(br);
                     break;
                 case GlobalDataType.IngredientShared:
                     break;

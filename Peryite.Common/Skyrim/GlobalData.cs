@@ -125,6 +125,7 @@ namespace Peryite.Common.Skyrim
                     result = new MagicFavorites().ReadThis(br);
                     break;
                 case GlobalDataType.PlayerControls:
+                    result = new PlayerControls().ReadThis(br);
                     break;
                 case GlobalDataType.StoryEventManager:
                     break;

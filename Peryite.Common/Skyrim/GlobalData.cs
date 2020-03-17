@@ -131,6 +131,7 @@ namespace Peryite.Common.Skyrim
                     result = new StoryEventManager().ReadThis(br);
                     break;
                 case GlobalDataType.IngredientShared:
+                    result = new IngredientShared().ReadThis(br);
                     break;
                 case GlobalDataType.MenuControls:
                     break;

@@ -201,6 +201,11 @@ namespace Peryite.Common.Skyrim
                 ChangeForms[i] = changeForm;
             }
 
+            for (var i = 0; i < GlobalDataTable3.Length; i++)
+            {
+                GlobalDataTable3[i] = br.ReadGlobalData(1000, 1005);
+            }
+
             return;
         }
 

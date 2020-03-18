@@ -140,6 +140,7 @@ namespace Peryite.Common.Skyrim
                     result = new MenuTopicManager().ReadThis(br);
                     break;
                 case GlobalDataType.TempEffects:
+                    result = new TempEffects().ReadThis(br);
                     break;
                 case GlobalDataType.Papyrus:
                     break;

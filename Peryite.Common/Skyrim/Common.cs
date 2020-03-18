@@ -161,6 +161,11 @@ namespace Peryite.Common.Skyrim
         public string? Name;
     }
 
+    public interface ICustomRead
+    {
+        void ReadData(BinaryReader br);
+    }
+
     public static partial class BinaryReaderExtensions
     {
         /// <summary>
@@ -174,6 +179,12 @@ namespace Peryite.Common.Skyrim
         {
             if (t == null)
                 return default!;
+
+            if (t is ICustomRead customRead)
+            {
+                customRead.ReadData(br);
+                return (T) customRead;
+            }
 
             // we start by getting all public properties and fields from the class
             // they need the ReadAttribute and an order because GetMembers() is not sorted

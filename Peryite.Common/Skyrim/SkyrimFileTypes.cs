@@ -79,6 +79,12 @@ namespace Peryite.Common.Skyrim
         public WString[] Plugins;
     }
 
+    public struct LightPluginInfo
+    {
+        public ushort LightPluginCount;
+        public WString[] LightPlugins;
+    }
+
     public struct FileLocationTable
     {
         public uint FormIDArrayCountOffset;

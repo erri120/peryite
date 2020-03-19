@@ -28,6 +28,7 @@ namespace Peryite.Common.Skyrim
         public byte FormVersion;
         public uint PluginInfoSize;
         public PluginInfo PluginInfo;
+        public LightPluginInfo LightPluginInfo;
         public FileLocationTable FileLocationTable;
         public IGlobalData[] GlobalDataTable1 = default!;
         public IGlobalData[] GlobalDataTable2 = default!;
@@ -135,6 +136,21 @@ namespace Peryite.Common.Skyrim
             for (var i = 0; i < PluginInfo.PluginCount; i++)
             {
                 PluginInfo.Plugins[i] = br.ReadWString();
+            }
+
+            if (IsSpecialEdition)
+            {
+                LightPluginInfo = new LightPluginInfo
+                {
+                    LightPluginCount = br.ReadUInt16()
+                };
+
+                LightPluginInfo.LightPlugins = new WString[LightPluginInfo.LightPluginCount];
+
+                for (var i = 0; i < LightPluginInfo.LightPluginCount; i++)
+                {
+                    LightPluginInfo.LightPlugins[i] = br.ReadWString();
+                }
             }
 
             FileLocationTable = new FileLocationTable

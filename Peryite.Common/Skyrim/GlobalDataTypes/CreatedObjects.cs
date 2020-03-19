@@ -16,7 +16,7 @@
                 WeaponEnchantments = new Enchantment[_weaponCount.Value];
             }
         }
-        [Read(2)]
+        [Read(2, IsCustomType = true)]
         public Enchantment[]? WeaponEnchantments;
 
         private VSVAL _armorCount;
@@ -31,7 +31,7 @@
                 ArmorEnchantments = new Enchantment[_armorCount.Value];
             }
         }
-        [Read(4)]
+        [Read(4, IsCustomType = true)]
         public Enchantment[]? ArmorEnchantments;
 
         private VSVAL _potionCount;
@@ -46,7 +46,7 @@
                 Potions = new Enchantment[_potionCount.Value];
             }
         }
-        [Read(6)]
+        [Read(6, IsCustomType = true)]
         public Enchantment[]? Potions;
 
         private VSVAL _poisonCount;
@@ -61,7 +61,7 @@
                 Poisons = new Enchantment[_poisonCount.Value];
             }
         }
-        [Read(8)]
+        [Read(8, IsCustomType = true)]
         public Enchantment[]? Poisons;
 
         public class Enchantment
@@ -83,7 +83,7 @@
                     Effects = new MagicEffect[_magicEffectsCount.Value];
                 }
             }
-            [Read(4)]
+            [Read(4, IsCustomType = true)]
             public MagicEffect[]? Effects;
         }
 
@@ -92,7 +92,7 @@
             [Read(1)]
             public RefID EffectID;
 
-            [Read(2)]
+            [Read(2, IsCustomType = true)]
             public EnchantmentInfo Info;
 
             [Read(3)]

@@ -1,4 +1,6 @@
-﻿namespace Peryite.Common.Skyrim.GlobalDataTypes
+﻿using System.IO;
+
+namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
     public class ProcessLists : IGlobalData
     {
@@ -12,7 +14,7 @@
         public float Unknown3;
         [Read(4)]
         public uint NextNumber;
-        [Read(5)]
+        [Read(5, IsCustomType = true)]
         public CrimeGroup[] AllCrimes = new CrimeGroup[7];
 
         public class CrimeGroup
@@ -30,7 +32,7 @@
                 }
             }
             
-            [Read(1)]
+            [Read(2, IsCustomType = true)]
             public Crime[]? Crimes;
         }
 
@@ -45,7 +47,7 @@
             Lycanthropy = 6
         }
 
-        public class Crime
+        public class Crime// : ICustomRead
         {
             [Read(1)]
             public uint WitnessNumber;
@@ -54,12 +56,16 @@
             public CrimeType CrimeType;
 
             [Read(3)]
-            public byte Unknown1;
+            public byte UnknownByte1;
 
             /// <summary>
             /// Number of stolen items, only for thefts
             /// </summary>
             [Read(4)]
+            [ConditionalParsing(Type = typeof(CrimeType), And = false, Chaining = new []
+            {
+                (object)0, 1
+            }, ChainingType = typeof(uint))]
             public uint Quantity;
 
             /// <summary>
@@ -69,13 +75,13 @@
             public uint SerialNumber;
             
             [Read(6)]
-            public byte Unknown2;
+            public byte UnknownByte2;
 
             /// <summary>
             /// Maybe date of crime? Little byte is the day
             /// </summary>
             [Read(7)]
-            public uint Unknown3;
+            public uint UnknownUInt;
 
             /// <summary>
             /// Negative value measured from moment of crime
@@ -120,6 +126,7 @@
                     Witnesses = new RefID[_witnessCount.Value];
                 }
             }
+
             [Read(14)]
             public RefID[]? Witnesses;
             [Read(15)]
@@ -134,7 +141,45 @@
             public byte IsCleared;
             
             [Read(18)]
-            public ushort Unknown4;
+            public ushort UnknownUShort;
+
+            /*public void ReadData(BinaryReader br)
+            {
+                WitnessNumber = br.ReadUInt32();
+                CrimeType = (CrimeType) br.ReadUInt32();
+                UnknownByte1 = br.ReadByte();
+
+                if (CrimeType == CrimeType.Theft || CrimeType == CrimeType.Pickpocketing)
+                    Quantity = br.ReadUInt32();
+
+                SerialNumber = br.ReadUInt32();
+                UnknownByte2 = br.ReadByte();
+                UnknownUInt = br.ReadUInt32();
+                ElapsedTime = br.ReadSingle();
+                VictimID = br.ReadRefID();
+                CriminalID = br.ReadRefID();
+
+                if (CrimeType == CrimeType.Theft || CrimeType == CrimeType.Pickpocketing)
+                {
+                    ItemBaseID = br.ReadRefID();
+                    OwnershipID = br.ReadRefID();
+                }
+
+                if (CrimeType == CrimeType.Trespassing)
+                    OwnershipID = br.ReadRefID();
+
+                WitnessCount = br.ReadVSVAL();
+                Witnesses = new RefID[WitnessCount.Value];
+                for (var i = 0; i < WitnessCount; i++)
+                {
+                    Witnesses[i] = br.ReadRefID();
+                }
+
+                Bounty = br.ReadUInt32();
+                CrimeFactionID = br.ReadRefID();
+                IsCleared = br.ReadByte();
+                UnknownUShort = br.ReadUInt16();
+            }*/
         }
     }
 }

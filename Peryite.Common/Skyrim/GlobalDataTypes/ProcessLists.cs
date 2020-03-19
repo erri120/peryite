@@ -47,7 +47,7 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
             Lycanthropy = 6
         }
 
-        public class Crime// : ICustomRead
+        public class Crime : ICustomRead
         {
             [Read(1)]
             public uint WitnessNumber;
@@ -143,34 +143,38 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
             [Read(18)]
             public ushort UnknownUShort;
 
-            /*public void ReadData(BinaryReader br)
+            public void ReadData(BinaryReader br)
             {
                 WitnessNumber = br.ReadUInt32();
-                CrimeType = (CrimeType) br.ReadUInt32();
+                var type = br.ReadUInt32();
+
+                if(type > 6)
+                    throw new CorruptedSaveFileException($"CrimeType has to be 0-6 but is {type}!", br);
+
+                CrimeType = (CrimeType) type;
                 UnknownByte1 = br.ReadByte();
 
-                if (CrimeType == CrimeType.Theft || CrimeType == CrimeType.Pickpocketing)
-                    Quantity = br.ReadUInt32();
+                Quantity = br.ReadUInt32();
 
                 SerialNumber = br.ReadUInt32();
                 UnknownByte2 = br.ReadByte();
                 UnknownUInt = br.ReadUInt32();
+
                 ElapsedTime = br.ReadSingle();
+                if(ElapsedTime > 0 )
+                    throw new CorruptedSaveFileException($"Elapsed Time for Crime has to be negative not {ElapsedTime}!", br);
+                
                 VictimID = br.ReadRefID();
                 CriminalID = br.ReadRefID();
 
-                if (CrimeType == CrimeType.Theft || CrimeType == CrimeType.Pickpocketing)
-                {
-                    ItemBaseID = br.ReadRefID();
-                    OwnershipID = br.ReadRefID();
-                }
-
-                if (CrimeType == CrimeType.Trespassing)
-                    OwnershipID = br.ReadRefID();
+                ItemBaseID = br.ReadRefID();
+                OwnershipID = br.ReadRefID();
 
                 WitnessCount = br.ReadVSVAL();
-                Witnesses = new RefID[WitnessCount.Value];
-                for (var i = 0; i < WitnessCount; i++)
+                if(WitnessCount.Value != WitnessNumber)
+                    throw new CorruptedSaveFileException($"WitnessCount does not equal Witness Number: {WitnessCount} != {WitnessNumber}!", br);
+                Witnesses = new RefID[WitnessNumber];
+                for (var i = 0; i < WitnessNumber; i++)
                 {
                     Witnesses[i] = br.ReadRefID();
                 }
@@ -179,7 +183,7 @@ namespace Peryite.Common.Skyrim.GlobalDataTypes
                 CrimeFactionID = br.ReadRefID();
                 IsCleared = br.ReadByte();
                 UnknownUShort = br.ReadUInt16();
-            }*/
+            }
         }
     }
 }

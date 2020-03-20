@@ -157,12 +157,19 @@ namespace Peryite.Common.Skyrim
             }
 
             var positionEnd = br.BaseStream.Position;
+            var expectedEnd = positionStart + length;
 
-            if (positionStart + length != positionEnd)
-                throw new CorruptedSaveFileException(
-                    $"Expected amounts of bytes: {length}, number of bytes read: {positionEnd - positionStart} while reading GlobalData of type {type}!", br);
+            if (expectedEnd == positionEnd) return result;
 
-            return result;
+            if (expectedEnd > positionEnd && result.IsIgnorable())
+            {
+                br.ReadBytes((int)(expectedEnd - positionEnd));
+                return default!;
+            }
+
+            throw new CorruptedSaveFileException(
+                $"Expected amounts of bytes: {length}, number of bytes read: {positionEnd - positionStart} while reading GlobalData of type {type}!", br);
+
         }
     }
 }

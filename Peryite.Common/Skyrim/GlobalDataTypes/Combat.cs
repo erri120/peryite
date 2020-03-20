@@ -1,5 +1,6 @@
 ﻿namespace Peryite.Common.Skyrim.GlobalDataTypes
 {
+    [Ignorable]
     public class Combat : IGlobalData
     {
         public GlobalDataType Type => GlobalDataType.Combat;

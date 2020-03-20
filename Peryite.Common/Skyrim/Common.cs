@@ -150,7 +150,8 @@ namespace Peryite.Common.Skyrim
             Order = order;
         }
     }
-
+    
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class ConditionalParsing : Attribute
     {
         public Type? Type;
@@ -159,6 +160,17 @@ namespace Peryite.Common.Skyrim
         public object[]? Chaining;
         public Type? ChainingType;
         public string? Name;
+    }
+    
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    public class IgnorableAttribute : Attribute
+    {
+        public bool Ignorable;
+
+        public IgnorableAttribute()
+        {
+            Ignorable = true;
+        }
     }
 
     public interface ICustomRead

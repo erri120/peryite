@@ -17,12 +17,12 @@
             }
         }
         
-        [Read(1)]
+        [Read(2)]
         public RefID[]? FavoriteMagic;
 
         private VSVAL _count1;
         
-        [Read(1)]
+        [Read(3)]
         public VSVAL Count1
         {
             get => _count1;
@@ -33,7 +33,7 @@
             }
         }
         
-        [Read(1)]
+        [Read(4)]
         public RefID[]? MagicHotKeys;
     }
 }

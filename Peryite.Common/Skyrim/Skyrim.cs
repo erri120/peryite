@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using K4os.Compression.LZ4;
 
@@ -168,6 +169,18 @@ namespace Peryite.Common.Skyrim
                 Unused = ReadUInt32Array(br, 15)
             };
 
+            if(FileLocationTable.GlobalDataTable1Count > 9)
+                throw new CorruptedSaveFileException($"The GlobalDataTable1Count can not be greater than 9 but is {FileLocationTable.GlobalDataTable1Count}!", br);
+
+            if(FileLocationTable.GlobalDataTable2Count > 14)
+                throw new CorruptedSaveFileException($"The GlobalDataTable2Count can not be greater than 14 but is {FileLocationTable.GlobalDataTable2Count}!", br);
+            
+            if(FileLocationTable.GlobalDataTable3Count > 5)
+                throw new CorruptedSaveFileException($"The GlobalDataTable3Count can not be greater than 5 but is {FileLocationTable.GlobalDataTable3Count}!", br);
+
+            if(FileLocationTable.Unused.Any(x => x != 0))
+                throw new CorruptedSaveFileException("The unused array got filled with non-zero values! Please open a new issue on GitHub with this save file.", br);
+
             // types 0 to 8
             GlobalDataTable1 = new IGlobalData[FileLocationTable.GlobalDataTable1Count];
             
@@ -204,7 +217,7 @@ namespace Peryite.Common.Skyrim
                     var res = inflater.Inflate(decompressed);
 
                     if(res != changeForm.Length2)
-                        throw new CorruptedSaveFileException($"Result of inflation resulted in a return value of {res}!", br);
+                        throw new CorruptedSaveFileException($"Result of inflation resulted in a return value of {res} instead of {changeForm.Length2}!", br);
 
                     changeForm.Compression = SkyrimSaveFileCompression.ZLib;
                     changeForm.Data = decompressed;

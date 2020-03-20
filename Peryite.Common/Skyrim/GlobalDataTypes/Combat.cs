@@ -87,7 +87,7 @@
                         Unknown000Array = new Unknown000[_count0.Value];
                     }
                 }
-                [Read(2)]
+                [Read(2, IsCustomType = true)]
                 public Unknown000[]? Unknown000Array;
 
                 private VSVAL _count1;
@@ -102,7 +102,7 @@
                         Unknown001Array = new Unknown001[_count1.Value];
                     }
                 }
-                [Read(4)]
+                [Read(4, IsCustomType = true)]
                 public Unknown001[]? Unknown001Array;
                 
                 [Read(5, IsCustomType = true)]
@@ -113,7 +113,7 @@
                 public UnknownStruct UnknownStruct3;
                 [Read(8, IsCustomType = true)]
                 public UnknownStruct UnknownStruct4;
-                [Read(9)]
+                [Read(9, IsCustomType = true)]
                 public UnknownStruct[] UnknownStructArray = new UnknownStruct[11];
                 
                 [Read(10)]
@@ -123,7 +123,7 @@
                 /// Only present if <see cref="UnknownFlag"/> is not zero
                 /// </summary>
                 [Read(11, IsCustomType = true)]
-                [ConditionalParsing(Name = nameof(UnknownFlag), And = true, Chaining = new[] {(object) 0},
+                [ConditionalParsing(Name = nameof(UnknownFlag), And = true, Chaining = new[] {(object) (uint)0},
                     ChainingType = typeof(uint), Not = true)]
                 public Unknown002? Unknown002Field;
                 
@@ -224,7 +224,7 @@
                             Unknown0020Array = new Unknown0020[_count0.Value];
                         }
                     }
-                    [Read(8)]
+                    [Read(8, IsCustomType = true)]
                     public Unknown0020[]? Unknown0020Array;
 
                     private VSVAL _count1;
@@ -239,7 +239,7 @@
                             Unknown0021Array = new Unknown0021[_count1.Value];
                         }
                     }
-                    [Read(10)]
+                    [Read(10, IsCustomType = true)]
                     public Unknown0021[]? Unknown0021Array;
 
                     [Read(11)]
@@ -248,8 +248,8 @@
                     /// <summary>
                     /// Only present if <see cref="UnknownFlag"/> is not zero
                     /// </summary>
-                    [Read(12)]
-                    [ConditionalParsing(Name = nameof(UnknownFlag), And = true, Chaining = new[] {(object) 0},
+                    [Read(12, IsCustomType = true)]
+                    [ConditionalParsing(Name = nameof(UnknownFlag), And = true, Chaining = new[] {(object) (byte)0},
                         ChainingType = typeof(byte), Not = true)]
                     public Unknown0022? Unknown0022Field;
 
@@ -297,7 +297,7 @@
                                 Unknown00220Array = new Unknown00220[_count0];
                             }
                         }
-                        [Read(4)]
+                        [Read(4, IsCustomType = true)]
                         public Unknown00220[]? Unknown00220Array;
                         
                         [Read(5)]
@@ -310,7 +310,6 @@
                         public float UnknownFloat3;
                         [Read(9)]
                         public float UnknownFloat4;
-                        
                         [Read(10)]
                         public float UnknownFloat5;
                         [Read(11)]
